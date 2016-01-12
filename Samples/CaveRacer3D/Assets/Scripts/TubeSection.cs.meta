@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1651311e22939af43bbd8e15907bf9e1
+timeCreated: 1440513727
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - DustPrefab: {instanceID: 0}
+  - StonePrefab: {instanceID: 0}
+  - CoinPrefab: {fileID: 125736, guid: ec9a153c273e7034c99e821dc94904d8, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
