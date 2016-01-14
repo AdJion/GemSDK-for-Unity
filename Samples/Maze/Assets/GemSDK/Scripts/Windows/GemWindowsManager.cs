@@ -17,7 +17,6 @@ namespace GemSDK.Unity
         public void Connect()
         {
             NativeWrapper.gemInitialize();
-            //UnityEngine.Debug.Log("gemConnectRole(" + role.ToString() + ") > " + NativeWrapper.gemConnectRole(role).ToString());
         }
 
         public void Disconnect()
@@ -30,7 +29,6 @@ namespace GemSDK.Unity
             gems.Clear();
             
             NativeWrapper.gemTerminate();
-            //UnityEngine.Debug.Log("gemDisconnectRole(" + role.ToString() + ") > " + NativeWrapper.gemConnectRole(role).ToString());
         }
 
         public IGem GetGem(string address)

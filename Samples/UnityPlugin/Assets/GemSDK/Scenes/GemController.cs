@@ -11,6 +11,8 @@ public class GemController : MonoBehaviour
 	// Use this for initialization
 	void Start()
     {
+        GemManager.Instance.Connect();
+
         string[] gemsKnown = new string[0];
         
         if (Application.platform == RuntimePlatform.Android) 
@@ -25,14 +27,11 @@ public class GemController : MonoBehaviour
             gemsKnown = WindowsBleManager.GetPairedGems();
         }
 
-
         if (gemsKnown.Length > 0)
         {
             //Get the Gem instance for the curtain MAC address
             gem = GemManager.Instance.GetGem(gemsKnown[0]);
         }
-
-        GemManager.Instance.Connect();
     }
 
     void FixedUpdate()

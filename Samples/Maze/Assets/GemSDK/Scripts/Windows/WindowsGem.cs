@@ -97,11 +97,16 @@ namespace GemSDK.Unity
 
         public void Connect()
         {
-            Debug.Log("gemConnectRole(" + addressStr + ") > " + NativeWrapper.gemConnect(address).ToString());
+            GemStatusCode result = NativeWrapper.gemConnect(address);
+
+            if (result == GemStatusCode.Success) State = GemState.Connected;
+
+            Debug.Log("gemConnectRole(" + addressStr + ") > " + result.ToString());
         }
 
         public void Release()
         {
+            State = GemState.Disconnected;
             Debug.Log("gemDisconnectRole(" + addressStr + ") > " + NativeWrapper.gemDisconnect(address).ToString());
         }
 
