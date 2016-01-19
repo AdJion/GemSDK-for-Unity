@@ -25,7 +25,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 108444}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.97210884, y: 14.7330904, z: -5.4710989}
+  m_LocalPosition: {x: 9.972109, y: 14.73309, z: -5.471099}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -48,8 +48,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -78,13 +80,13 @@ MonoBehaviour:
   DustPrefab: {fileID: 104316, guid: 8ba9f2f1bc4e9394d8533172362fb8ad, type: 2}
   dustCount: 5
   StonePrefab: {fileID: 177302, guid: 3e249d2dcf500a346b20045b0586ae38, type: 2}
-  StoneChance: .550000012
-  StoneOffset: .800000012
-  stoneMinSize: .600000024
+  StoneChance: 0.45
+  StoneOffset: 0.8
+  stoneMinSize: 0.6
   stoneMaxSize: 1.5
-  stoneMinRadius: .300000012
-  stoneMaxRadius: .5
-  ObjectGenerationStep: 1.39999998
+  stoneMinRadius: 0.3
+  stoneMaxRadius: 0.5
+  ObjectGenerationStep: 1.4
   CoinPrefab: {fileID: 125736, guid: ec9a153c273e7034c99e821dc94904d8, type: 2}
 --- !u!1001 &100100000
 Prefab:
@@ -107,7 +109,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: StoneChance
-      value: .550000012
+      value: 0.45
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: StoneOffset

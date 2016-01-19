@@ -23,12 +23,9 @@ public class EndGui : MonoBehaviour {
 
     void OnEnable()
     {
-        if (!inited)
-        {
-            best = PlayerPrefs.GetFloat(ScoreKey, 0f);
-            inited = true;
-        }
-        SetValue(BestScore, best.ToString());
+        best = PlayerPrefs.GetFloat(ScoreKey, 0f);
+        inited = true;
+        SetValue(BestScore, ((int)best).ToString());
     }
 
 	private void SetValue(Text t, string val) {
