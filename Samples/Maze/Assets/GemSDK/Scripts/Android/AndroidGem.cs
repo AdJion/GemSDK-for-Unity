@@ -3,7 +3,6 @@ using System.Collections;
 
 namespace GemSDK.Unity
 {
-    #if (UNITY_ANDROID)
     internal class AndroidGem : AndroidJavaProxy, IGem 
     {
         private bool bound;
@@ -106,7 +105,7 @@ namespace GemSDK.Unity
             gemWrapper.Call("calibrate");
         }
 
-        #region UnityCallback
+    #region UnityCallback
         public void onStateChanged(int state)
         {
             this._state = (GemState)state;
@@ -137,7 +136,6 @@ namespace GemSDK.Unity
             }
         }
 
-        #endregion
+    #endregion
     }
-    #endif
 }

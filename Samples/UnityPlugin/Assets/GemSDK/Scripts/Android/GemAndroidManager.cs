@@ -3,7 +3,6 @@ using System.Collections;
 
 namespace GemSDK.Unity
 {
-    #if (UNITY_ANDROID)
     public class GemAndroidManager : IGemManager
     {
         private AndroidJavaObject service;
@@ -30,5 +29,4 @@ namespace GemSDK.Unity
             service.Call("unbindService", activity);
         }
     }
-#endif
 }

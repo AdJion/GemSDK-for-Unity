@@ -20,7 +20,7 @@ namespace GemSDK.Unity
             {
                 if (instance == null)
                 {
-                    #if (UNITY_ANDROID)
+                    #if (UNITY_ANDROID && !UNITY_EDITOR)
                         instance = new GemAndroidManager();
                     #elif (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
                         instance = new GemWindowsService();
