@@ -21,7 +21,7 @@ namespace GemSDK.Unity
             {
                 Quaternion result;
 
-                lock(lastMutex)
+                lock (lastMutex)
                 {
                     result = _last;
                 }
@@ -31,13 +31,13 @@ namespace GemSDK.Unity
 
             set
             {
-                lock(lastMutex)
+                lock (lastMutex)
                 {
                     _last = value;
                 }
             }
         }
-        
+
         private Vector3 LastAcceleration
         {
             get
@@ -60,7 +60,7 @@ namespace GemSDK.Unity
                 }
             }
         }
-        
+
         public WindowsGem(string address)
         {
             _last = Quaternion.identity;
@@ -85,14 +85,14 @@ namespace GemSDK.Unity
         }
 
         public GemState State { get; private set; }
-        
+
         public Quaternion Rotation { get { return reference * Last; } }
 
         public Vector3 Acceleration { get { return LastAcceleration; } }
 
         public void Calibrate()
         {
-            reference = Quaternion.Inverse(Last);   
+            reference = Quaternion.Inverse(Last);
         }
 
         public void Connect()
@@ -101,13 +101,13 @@ namespace GemSDK.Unity
 
             if (result == GemStatusCode.Success) State = GemState.Connected;
 
-            Debug.Log("gemConnectRole(" + addressStr + ") > " + result.ToString());
+            Debug.Log("GemSDK: Connection to \"" + addressStr + "\" -> " + result.ToString());
         }
 
         public void Release()
         {
             State = GemState.Disconnected;
-            Debug.Log("gemDisconnectRole(" + addressStr + ") > " + NativeWrapper.gemDisconnect(address).ToString());
+            Debug.Log("GemSDK: Disconnection from \"" + addressStr + "\" -> " + NativeWrapper.gemDisconnect(address).ToString());
         }
 
         #region not implemented yet

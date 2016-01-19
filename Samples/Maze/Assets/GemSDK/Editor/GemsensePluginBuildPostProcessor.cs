@@ -10,8 +10,7 @@ class GemsensePluginBuildPostProcessor
     public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
     {
         //Copy DLL from plugins folter to executable root for Windows builds
-        if (target == BuildTarget.StandaloneWindows ||
-           target == BuildTarget.StandaloneWindows64)
+        if (target == BuildTarget.StandaloneWindows64)
         {
             var pathToDLL = Path.Combine(Path.GetDirectoryName(pathToBuiltProject),
                             Path.GetFileNameWithoutExtension(pathToBuiltProject) + "_Data");
@@ -32,6 +31,10 @@ class GemsensePluginBuildPostProcessor
             {
                 Debug.Log(ex.Message);
             }
+        }
+        else if (target != BuildTarget.Android)
+        {
+            Debug.LogError("GemSDK: this platform is not supported. Supported platforms: Android, Windows(x64)");
         }
     }
 }

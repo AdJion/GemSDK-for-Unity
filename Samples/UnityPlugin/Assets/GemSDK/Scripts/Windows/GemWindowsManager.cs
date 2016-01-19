@@ -2,21 +2,23 @@
 using System;
 using System.Collections.Generic;
 using GemSDK.Unity;
+using UnityEngine;
 
 namespace GemSDK.Unity
 {
-    public class GemWindowsService : IGemManager
+    public class GemWindowsManager : IGemManager
     {
         Dictionary<String, WindowsGem> gems;
 
-        public GemWindowsService()
+        public GemWindowsManager()
         {
             gems = new Dictionary<String, WindowsGem>();
         }
 
         public void Connect()
         {
-            NativeWrapper.gemInitialize();
+            var result = NativeWrapper.gemInitialize();
+            Debug.Log("GemSDK: initialization -> " + result.ToString());
         }
 
         public void Disconnect()
@@ -27,8 +29,9 @@ namespace GemSDK.Unity
             }
 
             gems.Clear();
-            
-            NativeWrapper.gemTerminate();
+
+            var result = NativeWrapper.gemTerminate();
+            Debug.Log("GemSDK: closing -> " + result.ToString());
         }
 
         public IGem GetGem(string address)
