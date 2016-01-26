@@ -3,9 +3,10 @@ using System.Collections;
 
 namespace GemSDK.Unity
 {
-    internal class AndroidGem : AndroidJavaProxy, IGem 
+    internal class AndroidGem : AndroidJavaProxy, IGem
     {
         private bool bound;
+        private bool isPedometerActive = false;
         private AndroidJavaObject activity;
         private AndroidJavaObject gemWrapper;
 
@@ -23,7 +24,7 @@ namespace GemSDK.Unity
 
         public void Reconnect()
         {
-            gemWrapper.Call("reconnect");   
+            gemWrapper.Call("reconnect");
         }
 
         internal AndroidGem(string address, AndroidJavaObject activity)
@@ -33,7 +34,7 @@ namespace GemSDK.Unity
 
             activity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
             {
-                gemWrapper = new AndroidJavaObject("com.gemsense.gemsdk.unity.GemWrapper", address, this);   
+                gemWrapper = new AndroidJavaObject("com.gemsense.gemsdk.unity.GemWrapper", address, this);
             }));
         }
 
@@ -44,11 +45,18 @@ namespace GemSDK.Unity
 
         public void setPedometerActive(bool isActive)
         {
-            gemWrapper.Call("setPedometerActive", isActive);
+            isPedometerActive = isActive;
+
+            if (State == GemState.Connected)
+            {
+                gemWrapper.Call("setPedometerActive", isActive);
+            }
         }
 
-        public Quaternion Rotation {
-            get {
+        public Quaternion Rotation
+        {
+            get
+            {
                 if (gemWrapper != null)
                 {
                     float[] q = gemWrapper.Call<float[]>("getLastQuaternion");
@@ -105,7 +113,7 @@ namespace GemSDK.Unity
             gemWrapper.Call("calibrate");
         }
 
-    #region UnityCallback
+        #region UnityCallback
         public void onStateChanged(int state)
         {
             this._state = (GemState)state;
@@ -122,6 +130,7 @@ namespace GemSDK.Unity
                     HardwareRevision = sysInfoAndroid.Get<string>("hardwareRevision")
                 };
 
+                setPedometerActive(isPedometerActive);
             }
             Debug.Log("new connection status is " + ((GemState)state).ToString().ToUpper());
         }
@@ -136,6 +145,6 @@ namespace GemSDK.Unity
             }
         }
 
-    #endregion
+        #endregion
     }
 }
