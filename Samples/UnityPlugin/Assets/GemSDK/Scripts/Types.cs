@@ -19,7 +19,8 @@ namespace GemSDK.Unity
 
     }
 
-    public class PedometerData {
+    public class PedometerData
+    {
         /// <summary>
         /// Steps count
         /// </summary>
@@ -27,7 +28,7 @@ namespace GemSDK.Unity
         /// <summary>
         /// Walk time in seconds
         /// </summary>
-        public float WalkTime {get; set; }
+        public float WalkTime { get; set; }
     }
 
     public enum GemState
@@ -38,30 +39,25 @@ namespace GemSDK.Unity
         Disconnected = 0
     }
 
-    public enum GemError
+    internal enum GemError
     {
-        ConnectingTimeout = 404
+        ConnectingTimeout = 201,
+        WrongDevice = 202,
+        SensorsUnavailable = 203,
     }
 
 #if (UNITY_ANDROID)
-    public enum GemRole
+    internal enum GemRole
     {
         Primary = 0,
         Secondary = 1
     }
 #elif (UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN)
-    public enum GemRole : int
+    internal enum GemRole : int
     {
         None = 0x00,
         Primary = 0x01,
         Secondary = 0x02
     }
 #endif
-
-    public class GemServiceNotInstalledException : Exception
-    {
-        public GemServiceNotInstalledException()
-            : base("GemService not found. Please install Gemsense app")
-        { }
-    }
 }

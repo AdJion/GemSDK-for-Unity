@@ -116,12 +116,22 @@ namespace GemSDK.Unity
             //throw new NotImplementedException();
         }
 
-        public PedometerData Pedometer { get; private set; }
+        public PedometerData Pedometer { 
+            get {
+                return new PedometerData();
+            } 
+        }
+
         public GemSystemInfo SystemInfo { get; private set; }
 
-        public void setPedometerActive(bool isActive)
+        public void SetPedometerActive(bool isActive)
         {
             //throw new NotImplementedException();        
+        }
+
+        public void ResetPedometer()
+        {
+            //throw new NotImplementedException();   
         }
 
         public bool CheckTapOccured()

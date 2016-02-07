@@ -43,13 +43,24 @@ namespace GemSDK.Unity
             gemWrapper.Call("release");
         }
 
-        public void setPedometerActive(bool isActive)
+        public void SetPedometerActive(bool isActive)
         {
             isPedometerActive = isActive;
 
             if (State == GemState.Connected)
             {
                 gemWrapper.Call("setPedometerActive", isActive);
+            }
+        }
+
+        /// <summary>
+        /// Works only with Gems vesion >= 1.2.0
+        /// </summary>
+        public void ResetPedometer()
+        {
+            if (State == GemState.Connected)
+            {
+                gemWrapper.Call("resetPedometer");
             }
         }
 
@@ -130,7 +141,7 @@ namespace GemSDK.Unity
                     HardwareRevision = sysInfoAndroid.Get<string>("hardwareRevision")
                 };
 
-                setPedometerActive(isPedometerActive);
+                SetPedometerActive(isPedometerActive);
             }
             Debug.Log("new connection status is " + ((GemState)state).ToString().ToUpper());
         }
