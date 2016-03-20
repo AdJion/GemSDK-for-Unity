@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace GemSDK.Unity
 {
-    public class GemWindowsManager : IGemManager
+    internal class GemWindowsManager : IGemManager
     {
         Dictionary<String, WindowsGem> gems;
 
@@ -47,6 +47,23 @@ namespace GemSDK.Unity
             }
 
             return gem;
+        }
+
+        public IGem GetGem(int pos)
+        {
+            string[] gemsKnown = new string[0];
+
+            gemsKnown = WindowsBleManager.GetPairedGems();
+            
+            if (gemsKnown.Length > 0)
+            {
+                //Get the Gem instance for the curtain MAC address
+                return GemManager.Instance.GetGem(gemsKnown[0]);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

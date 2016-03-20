@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace GemSDK.Unity
 {
-    public class GemAndroidManager : IGemManager
+    internal class GemAndroidManager : IGemManager
     {
         private AndroidJavaObject service;
         private AndroidJavaObject activity;
@@ -27,6 +27,23 @@ namespace GemSDK.Unity
         public void Disconnect()
         {
             service.Call("unbindService", activity);
+        }
+
+        public IGem GetGem(int pos)
+        {
+            string[] gemsKnown = new string[0];
+
+            gemsKnown = GemSDKUtilityApp.GetWhiteList();
+
+            if (gemsKnown.Length > 0)
+            {
+                //Get the Gem instance for the curtain MAC address
+                return GemManager.Instance.GetGem(gemsKnown[0]);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

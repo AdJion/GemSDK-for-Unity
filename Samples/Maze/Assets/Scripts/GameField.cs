@@ -21,31 +21,12 @@ public class GameField : MonoBehaviour {
 
         GemManager.Instance.Connect();
 
-
-        string[] gemsKnown = new string[0];
-
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            //Get white list from the "Gem SDK Utility" app
-            gemsKnown = GemSDKUtilityApp.GetWhiteList();
-        }
-        else if (Application.platform == RuntimePlatform.WindowsEditor ||
-                Application.platform == RuntimePlatform.WindowsPlayer)
-        {
-            //Get gems paired with Windows bluetooth settings
-            gemsKnown = WindowsBleManager.GetPairedGems();
-        }
-
-
-        if (gemsKnown.Length > 0)
-        {
-            //Get the Gem instance for the curtain MAC address
-            gem = GemManager.Instance.GetGem(gemsKnown[0]);
-        }
+        //To get gem by number instead of address, on Android the Gem should be paired to Gem SDK Utility app
+        gem = GemManager.Instance.GetGem(0);
 	}
 
 	public void Calibrate() {
-        //gem.Calibrate ();
+        gem.CalibrateAzimuth ();
 	}
 
 	// Update is called once per frame

@@ -50,8 +50,25 @@ internal static class NativeWrapper
 {
     private const string DLLName = "GemSDK";
 
+    public enum GemState
+    {
+        Connecting = 0,
+        Connected = 1,
+        Disconnecting = 2,
+        Disconnected
+    }
+
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void gemOnCombinedDataReceived(IntPtr quaternion, IntPtr acceleration);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void gemOnTapDataReceived(uint direction);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void gemOnPedometerReceived(uint steps, float walktime);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    public delegate void gemOnStateChanged(GemState state);
 
     [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
     public static extern GemStatusCode gemInitialize();
@@ -60,22 +77,13 @@ internal static class NativeWrapper
     public static extern GemStatusCode gemTerminate();
 
     [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
-    public static extern GemStatusCode gemSetOnCombinedDataReceived(byte[] address, gemOnCombinedDataReceived func);
-
-    [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
-    public static extern GemStatusCode gemSetOnCombinedDataReceivedRole(GemRole role, gemOnCombinedDataReceived func);
+    public static extern GemStatusCode gemSetOnCombinedData(byte[] address, gemOnCombinedDataReceived func);
 
     [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
     public static extern GemStatusCode gemConnect(byte[] address);
 
     [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
     public static extern GemStatusCode gemDisconnect(byte[] address);
-
-    [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
-    public static extern GemStatusCode gemConnectRole(GemRole role);
-
-    [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
-    public static extern GemStatusCode gemDisconnectRole(GemRole role);
 
     [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
     public static extern ulong gemGetWin32LastError();
@@ -88,4 +96,25 @@ internal static class NativeWrapper
 
     [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
     public static extern GemStatusCode gemGetInfo(byte[] address, out GemInfo gemInfo);
+
+    [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern GemStatusCode gemEnableTap(byte[] address);
+
+    [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern GemStatusCode gemDisableTap(byte[] address);
+
+    [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern GemStatusCode gemSetOnTapData(byte[] address, gemOnTapDataReceived func);
+
+    [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern GemStatusCode gemEnablePedometer(byte[] address);
+
+    [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern GemStatusCode gemDisablePedometer(byte[] address);
+
+    [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern GemStatusCode gemSetOnPedometerData(byte[] address, gemOnPedometerReceived func);
+
+    [DllImport(DLLName, CallingConvention = CallingConvention.Cdecl)]
+    public static extern GemStatusCode gemSetOnStateChanged(byte[] address, gemOnStateChanged func);
 }

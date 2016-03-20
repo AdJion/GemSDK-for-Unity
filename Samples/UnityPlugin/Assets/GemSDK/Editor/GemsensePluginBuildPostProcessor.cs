@@ -10,7 +10,7 @@ class GemsensePluginBuildPostProcessor
     public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
     {
         //Copy DLL from plugins folter to executable root for Windows builds
-        if (target == BuildTarget.StandaloneWindows64)
+        if (target == BuildTarget.StandaloneWindows64 || target == BuildTarget.StandaloneWindows)
         {
             var pathToDLL = Path.Combine(Path.GetDirectoryName(pathToBuiltProject),
                             Path.GetFileNameWithoutExtension(pathToBuiltProject) + "_Data");

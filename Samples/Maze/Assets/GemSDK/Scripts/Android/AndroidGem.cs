@@ -22,7 +22,7 @@ namespace GemSDK.Unity
 
         public GemSystemInfo SystemInfo { get; private set; }
 
-        public void Reconnect()
+        private void Reconnect()
         {
             gemWrapper.Call("reconnect");
         }
@@ -51,6 +51,11 @@ namespace GemSDK.Unity
             {
                 gemWrapper.Call("setPedometerActive", isActive);
             }
+        }
+
+        public void SetTapActive(bool isActive)
+        {
+            //Always active by default. Nothing to do
         }
 
         /// <summary>
@@ -121,7 +126,17 @@ namespace GemSDK.Unity
 
         public void Calibrate()
         {
-            gemWrapper.Call("calibrate");
+            CalibrateOrigin();
+        }
+
+        public void CalibrateOrigin()
+        {
+            gemWrapper.Call("calibrateOrigin");
+        }
+
+        public void CalibrateAzimuth()
+        {
+            gemWrapper.Call("calibrateAzimuth");
         }
 
         #region UnityCallback

@@ -13,25 +13,9 @@ public class GemController : MonoBehaviour
     {
         GemManager.Instance.Connect();
 
-        string[] gemsKnown = new string[0];
-        
-        if (Application.platform == RuntimePlatform.Android) 
-        {
-            //Get white list from the "Gem SDK Utility" app
-            gemsKnown = GemSDKUtilityApp.GetWhiteList();
-        }
-        else if(Application.platform == RuntimePlatform.WindowsEditor ||
-                Application.platform == RuntimePlatform.WindowsPlayer)
-        {
-            //Get gems paired with Windows bluetooth settings
-            gemsKnown = WindowsBleManager.GetPairedGems();
-        }
-
-        if (gemsKnown.Length > 0)
-        {
-            //Get the Gem instance for the curtain MAC address
-            gem = GemManager.Instance.GetGem(gemsKnown[0]);
-        }
+        //To get gem by number instead of address, on Android the Gem should be paired to Gem SDK Utility app
+        gem = GemManager.Instance.GetGem(0);
+        //gem = GemManager.Instance.GetGem("FF:FF:FF:FF:FF:FF");
     }
 
     void FixedUpdate()
@@ -39,12 +23,17 @@ public class GemController : MonoBehaviour
         if (gem != null)
         {
             if (Input.GetMouseButton(0))
-                gem.Calibrate();
+            {
+                gem.CalibrateAzimuth();
+
+                //Use instead of CalibrateAzimuth() to calibrate also tilt and elevation
+                //gem.ColibrateOrigin(); 
+            }
 
             transform.rotation = gem.Rotation;
             stateText.text = gem.State.ToString();
         }
-    }
+    } 
 
     void OnApplicationQuit()
     {

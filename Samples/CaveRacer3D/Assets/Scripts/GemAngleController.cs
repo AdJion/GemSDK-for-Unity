@@ -29,33 +29,14 @@ public class GemAngleController : MonoBehaviour {
 	
 	public void Calibrate() {
         //Use current orientation as an origin
-        gem.Calibrate();
+        gem.CalibrateOrigin();
 	}
 		
 	// Use this for initialization
 	void Start () {
         GemManager.Instance.Connect();
 
-        string[] gemsKnown = new string[0];
-
-        if (Application.platform == RuntimePlatform.Android)
-        {
-            //Get white list from the "Gem SDK Utility" app
-            gemsKnown = GemSDKUtilityApp.GetWhiteList();
-        }
-        else if (Application.platform == RuntimePlatform.WindowsEditor ||
-                Application.platform == RuntimePlatform.WindowsPlayer)
-        {
-            //Get gems paired with Windows bluetooth settings
-            gemsKnown = WindowsBleManager.GetPairedGems();
-        }
-
-
-        if (gemsKnown.Length > 0)
-        {
-            //Get the Gem instance for the curtain MAC address
-            gem = GemManager.Instance.GetGem(gemsKnown[0]);
-        }
+        gem = GemManager.Instance.GetGem(0);
     }
 	
     void FixedUpdate()

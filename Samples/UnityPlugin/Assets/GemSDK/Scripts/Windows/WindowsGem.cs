@@ -6,14 +6,23 @@ namespace GemSDK.Unity
 {
     public class WindowsGem : IGem
     {
-        private Quaternion _last;
         private readonly object lastMutex = new object();
+
+        private Quaternion _last;
         private Vector3 _lastAcceleration;
         private readonly object lastAccelerationMutex = new object();
         private Quaternion reference;
-        private NativeWrapper.gemOnCombinedDataReceived onCombinedDataRecieved;
         private byte[] address;
         private string addressStr;
+        private bool tapOccured = false;
+
+        private bool tapActive = false;
+        private bool pedometerActive = false;
+
+        private NativeWrapper.gemOnCombinedDataReceived onCombinedDataRecieved;
+        private NativeWrapper.gemOnPedometerReceived onPedometerDataRecieved;
+        private NativeWrapper.gemOnTapDataReceived onTapDataRecieved;
+        private NativeWrapper.gemOnStateChanged onStateChanged;
 
         private Quaternion Last
         {
@@ -67,7 +76,7 @@ namespace GemSDK.Unity
             reference = Quaternion.identity;
             _lastAcceleration = Vector3.zero;
             State = GemState.Disconnected;
-            onCombinedDataRecieved = new NativeWrapper.gemOnCombinedDataReceived(CombinedDataReceived);
+            Pedometer = new PedometerData();
 
             string[] str = address.Split(':');
             var addrBytes = new byte[str.Length];
@@ -81,7 +90,19 @@ namespace GemSDK.Unity
             this.address = addrBytes;
             this.addressStr = address;
 
-            NativeWrapper.gemSetOnCombinedDataReceived(addrBytes, onCombinedDataRecieved);
+            State = GemState.Disconnected;
+
+            onCombinedDataRecieved = new NativeWrapper.gemOnCombinedDataReceived(CombinedDataReceived);
+            NativeWrapper.gemSetOnCombinedData(addrBytes, onCombinedDataRecieved);
+
+            onPedometerDataRecieved = new NativeWrapper.gemOnPedometerReceived(PedometerDataReceived);
+            NativeWrapper.gemSetOnPedometerData(addrBytes, onPedometerDataRecieved);
+
+            onTapDataRecieved = new NativeWrapper.gemOnTapDataReceived(TapDataReceived);
+            NativeWrapper.gemSetOnTapData(addrBytes, onTapDataRecieved);
+
+            onStateChanged = new NativeWrapper.gemOnStateChanged(StateChanged);
+            NativeWrapper.gemSetOnStateChanged(addrBytes, onStateChanged);
         }
 
         public GemState State { get; private set; }
@@ -92,54 +113,150 @@ namespace GemSDK.Unity
 
         public void Calibrate()
         {
+            CalibrateOrigin();
+        }
+
+        public void CalibrateOrigin()
+        {
             reference = Quaternion.Inverse(Last);
+        }
+
+        public void CalibrateAzimuth()
+        {
+            reference = Quaternion.AngleAxis( -GetAzimuth(Last), Vector3.up);
         }
 
         public void Connect()
         {
             GemStatusCode result = NativeWrapper.gemConnect(address);
 
-            if (result == GemStatusCode.Success) State = GemState.Connected;
-
             Debug.Log("GemSDK: Connection to \"" + addressStr + "\" -> " + result.ToString());
         }
 
         public void Release()
         {
-            State = GemState.Disconnected;
             Debug.Log("GemSDK: Disconnection from \"" + addressStr + "\" -> " + NativeWrapper.gemDisconnect(address).ToString());
         }
 
+        private void Reconnect()
+        {
+            if (State == GemState.Disconnected)
+            {
+                Release();
+                Connect();
+            }
+        }
+
+        private void StateChanged(NativeWrapper.GemState state)
+        {
+            Debug.Log("GemSDK: State changed from \"" + addressStr + "\" -> " + state.ToString());
+
+            if (state == NativeWrapper.GemState.Connected)
+            {
+                State = GemState.Connected;
+
+                if (tapActive)
+                    SetTapActive(true);
+
+                if (pedometerActive)
+                    SetPedometerActive(true);
+            }
+            else if (state == NativeWrapper.GemState.Connecting)
+            {
+                State = GemState.Connecting;
+            }
+            else if (state == NativeWrapper.GemState.Disconnected)
+            {
+                GemState lastState = State;
+                State = GemState.Disconnected;
+                
+                if (lastState == GemState.Connecting)
+                {
+                    Reconnect();
+                }
+            }
+            else if (state == NativeWrapper.GemState.Disconnecting)
+            {
+                State = GemState.Disconnecting;
+            }
+        }
+
         #region not implemented yet
-        public void Reconnect()
-        {
-            //throw new NotImplementedException();
-        }
-
-        public PedometerData Pedometer { 
-            get {
-                return new PedometerData();
-            } 
-        }
-
-        public GemSystemInfo SystemInfo { get; private set; }
-
-        public void SetPedometerActive(bool isActive)
-        {
-            //throw new NotImplementedException();        
-        }
 
         public void ResetPedometer()
         {
             //throw new NotImplementedException();   
         }
 
-        public bool CheckTapOccured()
-        {
-            return false;
+        #endregion
+
+        public GemSystemInfo SystemInfo { 
+            get 
+            { 
+                GemInfo info;
+                if (NativeWrapper.gemGetInfo(address, out info) == GemStatusCode.Success)
+                {
+                    GemSystemInfo res = new GemSystemInfo();
+                    res.Address = addressStr;
+                    res.FirmwareRevision = info.firmwareVer;
+                    res.HardwareRevision = info.hardwareVer;
+                    res.Name = info.name;
+
+                    return res;
+                }
+                else
+                {
+                    return null;
+                }
+            } 
         }
 
-        #endregion
+        public PedometerData Pedometer { get; private set; }
+
+        public void SetPedometerActive(bool isActive)
+        {
+            if (State != GemState.Connected)
+            {
+                //Save state to activate after connection
+                pedometerActive = true;
+                return;
+            }
+
+            if (isActive) {
+                NativeWrapper.gemEnablePedometer(address);
+            }
+            else {
+                NativeWrapper.gemDisablePedometer(address);
+            }
+        }
+
+        public void SetTapActive(bool isActive) 
+        {
+            if (State != GemState.Connected)
+            {
+                //Save state to activate after connection
+                tapActive = true;
+                return;
+            }
+
+            if(isActive) {
+                NativeWrapper.gemEnableTap(address);
+            }
+            else {
+                NativeWrapper.gemDisableTap(address);
+            }
+        }
+             
+        public bool CheckTapOccured()
+        {
+            if(tapOccured == true) {
+                tapOccured = false;
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
 
         private void CombinedDataReceived(IntPtr quaternion, IntPtr acceleration)
         {
@@ -149,8 +266,51 @@ namespace GemSDK.Unity
             float[] acc = new float[3];
             Marshal.Copy(acceleration, acc, 0, 3);
 
-            Last = new Quaternion(q[0], q[1], q[2], q[3]);
+            Last = new Quaternion(q[1], q[2], q[3], q[0]);
             LastAcceleration = new Vector3(acc[0], acc[1], acc[2]);
+        }
+
+        private void PedometerDataReceived(uint steps, float walktime)
+        {
+            PedometerData pedometer = new PedometerData();
+            pedometer.Steps = (int)steps;
+            pedometer.WalkTime = walktime;
+
+            Pedometer = pedometer;
+        }
+
+        private void TapDataReceived(uint direction)
+        {
+            tapOccured = true;
+        }
+
+        private float GetAzimuth(Quaternion quat)
+        {
+            Vector3 up = quat * new Vector3(0f, 1f, 0f);
+            Vector3 forward = quat * new Vector3(0f, 0f, 1f);
+            Vector3 right = quat * new Vector3(1f, 0f, 0f);
+
+            float forwProj = Mathf.Sqrt(forward.x * forward.x + forward.z * forward.z);
+            float rightProj = Mathf.Sqrt(right.x * right.x + right.z * right.z);
+
+            float angle;
+
+            if (forwProj >= rightProj)
+            {
+                angle = Mathf.Acos(forward.z / forwProj);
+
+            }
+            else
+            {
+                angle = Mathf.Acos(right.x / rightProj);
+            }
+
+            if (forward.x < 0)
+                angle = 2f * (float)Mathf.PI - angle;
+
+            angle *= 180f / Mathf.PI;
+
+            return angle;
         }
     }
 }

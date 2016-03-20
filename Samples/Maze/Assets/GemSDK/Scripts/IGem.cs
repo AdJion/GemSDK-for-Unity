@@ -23,7 +23,6 @@ namespace GemSDK.Unity
         /// <summary>
         /// Pedometer
         /// </summary>
-        /// <remarks>Not available on Windows</remarks> 
         PedometerData Pedometer { get; }
 
         /// <summary>
@@ -38,34 +37,48 @@ namespace GemSDK.Unity
         void Release();
 
         /// <summary>
-        /// Use current rotation as origin. All next rotaions will be relative to it
+        /// [Deprecated] Use CalibrateOrigin() instead of it
         /// </summary>
         void Calibrate();
 
         /// <summary>
-        /// Attempt to connect again to the Gem
+        /// Calibrates rotation (uses current rotation as an origin)
         /// </summary>
-        /// <remarks>Not available on Windows</remarks> 
-        void Reconnect();
+        void CalibrateOrigin();
+
+        /// <summary>
+        /// Calibrates only azimuth (compensates azimuth origin ambiguity)
+        /// </summary>
+        void CalibrateAzimuth();
+
+        ///// <summary>
+        ///// Attempt to connect again to the Gem
+        ///// </summary>
+        //void Reconnect();
 
         /// <summary>
         /// Enable/Disable pedometer data streaming
         /// </summary>
         /// <param name="isActive"><code>true</code> to enbale or <code>false</code> to disable</param>
-        /// <remarks>Not available on Windows</remarks> 
         void SetPedometerActive(bool isActive);
 
-        /*/// <summary>
+        /// <summary>
+        /// Enable/Disable tap event handling
+        /// </summary>
+        /// <param name="isActive"><code>true</code> to enbale or <code>false</code> to disable</param>
+        /// <remarks>On Android is always active by default</remarks> 
+        void SetTapActive(bool isActive);
+
+        /// <summary>
         /// Set current pedometer values to 0. Be careful: with firmware version below 1.2.0 will cause restart of the Gem 
         /// </summary>
         /// <remarks>Not available on Windows</remarks> 
-        void ResetPedometer();*/
+        void ResetPedometer();
 
         /// <summary>
         /// Check if at least one tap was catched between calls
         /// </summary>
         /// <returns>True if tap has been catched</returns>
-        /// <remarks>Not available on Windows</remarks> 
         bool CheckTapOccured();
     }
 }

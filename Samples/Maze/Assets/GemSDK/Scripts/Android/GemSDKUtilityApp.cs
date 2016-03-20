@@ -8,7 +8,7 @@ namespace GemSDK.Unity {
     /// <summary>
     /// Allows to get information from "GemSDK Tools" app if it's installed
     /// </summary>
-    class GemSDKUtilityApp
+    public class GemSDKUtilityApp
     {
         /// <summary>
         /// Gets gems adresses that were saved to the white list in "Gem SDK Utility" app.

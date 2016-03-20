@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GemSDK.Unity
 {
-    class WindowsBleManager
+    public class WindowsBleManager
     {
         public static string[] GetPairedGems() {
             uint gemsCount = NativeWrapper.gemGetDescriptionListCount();
