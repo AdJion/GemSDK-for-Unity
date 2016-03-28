@@ -17,7 +17,6 @@ namespace GemSDK.Unity
             for(int i = 0; i < gems.Length; i++)
             {
                 addresses[i] = convertAddress(gems[i].address);
-                
             }
 
             return addresses;

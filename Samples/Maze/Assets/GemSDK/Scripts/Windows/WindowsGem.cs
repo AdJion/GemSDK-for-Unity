@@ -286,7 +286,6 @@ namespace GemSDK.Unity
 
         private float GetAzimuth(Quaternion quat)
         {
-            Vector3 up = quat * new Vector3(0f, 1f, 0f);
             Vector3 forward = quat * new Vector3(0f, 0f, 1f);
             Vector3 right = quat * new Vector3(1f, 0f, 0f);
 

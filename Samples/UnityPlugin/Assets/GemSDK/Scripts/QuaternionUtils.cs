@@ -21,7 +21,7 @@ namespace GemSDK.QuaternionUtils
         /// <summary>
         /// Converts the rotation quaternion to azimuth-elevation representation 
         /// </summary>
-        /// <returns>The azimuth-elevation representation of the quaternion, {azimuth, elevation}</returns>
+        /// <returns>The azimuth-elevation representation of the quaternion, {azimuth, elevation} in degrees</returns>
         /// <param name="quat">The quaternion to convert</param>
         /// <param name="coordSpace">Use <c>CoordSpace.Body</c> to convert regarding to Device axes or 
         /// <c>CoordSpace.World</c> to convert regarding to world axes</param>
@@ -62,6 +62,10 @@ namespace GemSDK.QuaternionUtils
                 res[0] = -res[0];
                 res[0] = -res[1];
             }
+
+            //Convert radians to degrees
+            res[0] *= Mathf.Rad2Deg;
+            res[1] *= Mathf.Rad2Deg;
 
             return res;
         }
@@ -115,6 +119,10 @@ namespace GemSDK.QuaternionUtils
                 res[0] = -res[0];
                 res[0] = -res[1];
             }
+
+            //Convert radians to degrees
+            res[0] *= Mathf.Rad2Deg;
+            res[1] *= Mathf.Rad2Deg;
 
             return res;
         }
@@ -215,7 +223,7 @@ namespace GemSDK.QuaternionUtils
         /// <param name="quat">The quaternion to correct</param>
         public override Quaternion UpdateQuat(Quaternion quat)
         {
-            Vector2 az_el = AzimuthElevationConverter.Convert(quat);
+            Vector2 az_el = AzimuthElevationConverter.Convert(quat) * Mathf.Deg2Rad;
 
             float[] res = QuatUtils.FromYawPitchRoll(
                 -clamp(az_el.y, axis2),
@@ -249,7 +257,7 @@ namespace GemSDK.QuaternionUtils
         /// <param name="quat">The quaternion to correct</param>
         public override Quaternion UpdateQuat(Quaternion quat)
         {
-            Vector2 tilt_el = TiltElevationConverter.Convert(quat);
+            Vector2 tilt_el = TiltElevationConverter.Convert(quat) * Mathf.Deg2Rad;
 
             float[] res = QuatUtils.FromYawPitchRoll(
                 -clamp(tilt_el.y, axis2),

@@ -40,7 +40,10 @@ namespace GemSDK.Unity
 
         public void Release()
         {
-            gemWrapper.Call("release");
+            if (gemWrapper != null)
+            {
+                gemWrapper.Call("release");
+            }
         }
 
         public void SetPedometerActive(bool isActive)
@@ -121,6 +124,11 @@ namespace GemSDK.Unity
         /// <returns>True if tap has been catched</returns>
         public bool CheckTapOccured()
         {
+            if (gemWrapper == null)
+            {
+                return false;
+            }
+
             return gemWrapper.Call<bool>("checkTapOccured");
         }
 
@@ -131,12 +139,18 @@ namespace GemSDK.Unity
 
         public void CalibrateOrigin()
         {
-            gemWrapper.Call("calibrateOrigin");
+            if (gemWrapper != null)
+            {
+                gemWrapper.Call("calibrateOrigin");
+            }
         }
 
         public void CalibrateAzimuth()
         {
-            gemWrapper.Call("calibrateAzimuth");
+            if (gemWrapper != null)
+            {
+                gemWrapper.Call("calibrateAzimuth");
+            }
         }
 
         #region UnityCallback

@@ -31,14 +31,14 @@ namespace GemSDK.Unity
 
         public IGem GetGem(int pos)
         {
-            string[] gemsKnown = new string[0];
+            string[] gemsKnown;
 
             gemsKnown = GemSDKUtilityApp.GetWhiteList();
 
-            if (gemsKnown.Length > 0)
+            if (gemsKnown != null && gemsKnown.Length > pos)
             {
                 //Get the Gem instance for the curtain MAC address
-                return GemManager.Instance.GetGem(gemsKnown[0]);
+                return GemManager.Instance.GetGem(gemsKnown[pos]);
             }
             else
             {

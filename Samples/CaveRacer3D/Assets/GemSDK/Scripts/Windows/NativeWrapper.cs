@@ -19,7 +19,7 @@ public enum GemStatusCode : int
     Unknown = 0xFF
 }
 
-[StructLayout(LayoutKind.Sequential, Size = 42), Serializable]
+[StructLayout(LayoutKind.Sequential, Size = 38), Serializable]
 internal struct GemDescription
 {
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
@@ -27,8 +27,6 @@ internal struct GemDescription
 
     [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
     public string deviceName;
-
-    public GemRole role;
 }
 
 [StructLayout(LayoutKind.Sequential, Size = 97), Serializable]
